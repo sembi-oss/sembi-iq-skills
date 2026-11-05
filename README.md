@@ -11,7 +11,7 @@ Test-driven workflows, one skill each, backed by the Testmo, TestRail, or Xray M
 
 ## Using Claude
 
-If your agent is Claude (Claude Code, Claude Desktop, or Claude on the web), install the Claude plugins instead — they add slash commands and a subagent on top of these skills in a Claude specific manner. See [`sembi-iq-plugins`](https://github.com/SembiIQ/sembi-iq-plugins).
+If your agent is Claude (Claude Code, Claude Desktop, or Claude on the web), install the Claude plugins instead — they add slash commands and a subagent on top of these skills in a Claude specific manner. See [`sembi-iq-plugins`](https://github.com/sembi-oss/sembi-iq-plugins).
 
 ## Prerequisites
 
@@ -56,7 +56,7 @@ Agents look for skills as direct children of `~/.agents/skills/` — Zed states 
 **For TestRail**, run the following command:
 
 ```zsh
-git clone --filter=blob:none --sparse https://github.com/SembiIQ/sembi-iq-skills.git ~/.sembi-iq-skills \
+git clone --filter=blob:none --sparse https://github.com/sembi-oss/sembi-iq-skills.git ~/.sembi-iq-skills \
   && git -C ~/.sembi-iq-skills sparse-checkout set testrail \
   && mkdir -p ~/.agents/skills \
   && cp -R ~/.sembi-iq-skills/testrail/* ~/.agents/skills/
@@ -79,7 +79,7 @@ This results in the following layout on your file system:
 **For Testmo**, run the following command:
 
 ```zsh
-git clone --filter=blob:none --sparse https://github.com/SembiIQ/sembi-iq-skills.git ~/.sembi-iq-skills \
+git clone --filter=blob:none --sparse https://github.com/sembi-oss/sembi-iq-skills.git ~/.sembi-iq-skills \
   && git -C ~/.sembi-iq-skills sparse-checkout set testmo \
   && mkdir -p ~/.agents/skills \
   && cp -R ~/.sembi-iq-skills/testmo/* ~/.agents/skills/
@@ -102,7 +102,7 @@ This results in the following layout on your file system:
 **For Xray**, run the following command:
 
 ```zsh
-git clone --filter=blob:none --sparse https://github.com/SembiIQ/sembi-iq-skills.git ~/.sembi-iq-skills \
+git clone --filter=blob:none --sparse https://github.com/sembi-oss/sembi-iq-skills.git ~/.sembi-iq-skills \
   && git -C ~/.sembi-iq-skills sparse-checkout set xray \
   && mkdir -p ~/.agents/skills \
   && cp -R ~/.sembi-iq-skills/xray/* ~/.agents/skills/
