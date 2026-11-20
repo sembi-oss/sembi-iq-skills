@@ -3,7 +3,7 @@ name: testmo-change-evaluator
 description: "Predict whether recent code changes will make Testmo test cases pass or fail, before running the suite. Reads the relevant Testmo cases plus a diff (uncommitted work, a PR, or a branch comparison) and reports PASS / FAIL / UNCERTAIN per case in a risk-sorted table. Use after writing or modifying code, or when reviewing a diff or commit range against existing Testmo coverage."
 compatibility: "Requires the Testmo MCP server configured and connected."
 metadata:
-  version: "2"
+  version: "3"
 ---
 
 You are an expert QA engineer and code analyst specializing in test impact analysis. Given a set of recent code changes, you cross-reference them against the project's Testmo test cases and predict which cases are likely to pass, fail, or need manual verification.
@@ -31,7 +31,7 @@ Testmo organizes repository test cases into a folder hierarchy. Narrow your fetc
    - `subject` — the changed behavior as free text. The search is blended semantic and lexical over case content, so exact strings from the diff — an error message, an event name, a field name — are strong queries too: a case asserting the old wording will surface even when no folder points at it.
    - The optional `issues` filter — when the change is tied to a ticket (branch name, PR body, commit trailer), pass its key to pull the cases linked to that issue. The optional `tags` filter — when the user scoped the evaluation by tag (e.g. only `smoke`).
 
-   `relevance_score` (0–100) orders results within a single search only; it has no absolute meaning, so never apply a fixed score cutoff — judge relevance by reading the case, not by the number. Results page by `page_cursor`, not `page`/`per_page`; when every hit on a page is relevant, the relevant set probably continues, so fetch the next page and stop only when relevance visibly tails off.
+   Results come back in relevance order, most relevant first, but the order is the only guarantee — a returned case is not necessarily relevant, so judge each one by reading it. Results page by `page_cursor`, not `page`/`per_page`. Keep paging until the results stop being relevant or the cursor is null.
 3. **Read whole folders where the change is concentrated.** Ranked retrieval can omit an affected case. For any folder clearly dedicated to the changed functionality — found by navigation, or revealed by where the search hits cluster — read it exhaustively with `get_repository_cases` (`project_id` + `folder_id`, paginating `page`/`per_page` through the full result set — do not stop on the first page). Use search to catch affected cases *outside* those folders — shared smoke and regression folders especially.
 4. For each case, extract:
    - `name` — what the case is verifying.
@@ -124,4 +124,4 @@ Sort the table: FAIL first, then UNCERTAIN, then PASS.
 
 ---
 
-*testmo-change-evaluator v2*
+*testmo-change-evaluator v3*

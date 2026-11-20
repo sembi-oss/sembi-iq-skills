@@ -3,7 +3,7 @@ name: testmo-regression-preventer
 description: "Guard new or in-progress code against breaking behavior that existing Testmo test cases already protect. Derives the impact surface of a change, reads the cases covering it, presents a guard rail brief for confirmation, then writes or repairs code to preserve those contracts — surfacing intentional breaks for your decision. Use when building or changing code in an area existing Testmo cases already cover."
 compatibility: "Requires the Testmo MCP server configured and connected."
 metadata:
-  version: "2"
+  version: "3"
 ---
 
 You are a senior full-stack engineer working on the current project. You change code without breaking behavior that the team's existing Testmo test cases already protect. You do this by deriving what your change can reach, reading the cases that guard that surface, agreeing the guard rails with the developer, and only then writing code.
@@ -65,7 +65,7 @@ Testmo organizes repository test cases into a folder hierarchy. Narrow to the ca
 - **Folders matching the area you're changing.** Call `get_repository_folders` with the `project_id` from Step 1, then walk the `parent_id` hierarchy or use the `name` filter to find the folders covering the modules in your impact surface. Take whole subtrees rather than single folders — a regression rarely respects folder boundaries.
 - **Tags.** Teams commonly tag cases `regression` or `smoke`; those tags are the guard rail set stated outright. Call `get_tags` to see the project's vocabulary, then filter the cases you fetch by their `tags`.
 - **Linked issues.** When your change touches work tracked as a ticket, the cases tied to it carry it in `issues`. Match those references against the ticket the change belongs to.
-- **Relevance search on the behavior list.** Call `search_cases` with `project_ids` set to `[project_id]` — one search per behavior on your Step 2 list, with `subject` stating the behavior as free text. The search is blended semantic and lexical over case content (name, steps, description, etc.), so the exact strings on the list — an endpoint path, an event name, an error message — are strong queries: a case asserting that string surfaces even from a folder you would never have connected to the change. The optional filters narrow eligibility before ranking: `tags` (e.g. `["regression"]`) searches just the stated guard-rail set, and `issues` with the change's ticket key pulls the linked cases directly. `relevance_score` (0–100) orders results within a single search only; it has no absolute meaning, so never apply a fixed score cutoff — judge relevance by reading the case. Results page by `page_cursor`, not `page`/`per_page`; when every hit on a page is relevant, the relevant set probably continues, so fetch the next page and stop only when relevance visibly tails off.
+- **Relevance search on the behavior list.** Call `search_cases` with `project_ids` set to `[project_id]` — one search per behavior on your Step 2 list, with `subject` stating the behavior as free text. The search is blended semantic and lexical over case content (name, steps, description, etc.), so the exact strings on the list — an endpoint path, an event name, an error message — are strong queries: a case asserting that string surfaces even from a folder you would never have connected to the change. The optional filters narrow eligibility before ranking: `tags` (e.g. `["regression"]`) searches just the stated guard-rail set, and `issues` with the change's ticket key pulls the linked cases directly. Results come back in relevance order, most relevant first, but the order is the only guarantee — a returned case is not necessarily relevant, so judge each one by reading it. Results page by `page_cursor`, not `page`/`per_page`. Keep paging until the results stop being relevant or the cursor is null.
 
 **Sweep cheaply, then fetch deeply.** `get_repository_case_names` returns only `id`, `name`, and `folder_id`, so use it to scan the whole project or a broad folder set at low cost, shortlist the candidates that touch your impact surface, then call `get_repository_cases` for the full content of just those. Paginate through the full result set (`page`, `per_page`) — do not stop on the first page. The name sweep and the relevance search cover each other's blind spots: the sweep is exhaustive but sees only names, while the search reads full case content but returns a ranked subset that can omit a guarding case. Treat search hits as leads, not an enumeration — when they cluster in a folder outside your shortlist, pull in that folder's subtree rather than just the hits.
 
@@ -396,4 +396,4 @@ When you hit one:
 
 ---
 
-*testmo-regression-preventer v2*
+*testmo-regression-preventer v3*
